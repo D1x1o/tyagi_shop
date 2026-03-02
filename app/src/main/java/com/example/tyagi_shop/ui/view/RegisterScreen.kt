@@ -35,12 +35,20 @@ import com.example.tyagi_shop.R
 import com.example.tyagi_shop.ui.theme.MosyaginTheme
 import com.example.tyagi_shop.ui.viewModel.SignUpViewModel
 
+fun isValidEmail(email: String): Boolean { // написал функцию Мосягин Антоша 02.03.2026 16:17:44
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+}
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     viewModel: SignUpViewModel = viewModel()
 ) {
+
+    var showAlert by remember { mutableStateOf(false) }
+    var alertMessage by remember { mutableStateOf("") }
+
+    val viewModel: SignUpViewModel = viewModel()
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -133,7 +141,15 @@ fun RegisterScreen(
             // Кнопка
             Button(
                 onClick = {
-                    viewModel.signUp(email.trim(), password.trim(), navController)
+                    if (!isValidEmail(email.trim())) {
+                        alertMessage = "Введите корректный email адрес"
+                        showAlert = true
+                    } else if (password.trim().length < 6) {
+                        alertMessage = "Пароль должен содержать минимум 6 символов"
+                        showAlert = true
+                    } else {
+                        viewModel.signUp(email.trim(), password.trim(), navController)
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -145,7 +161,7 @@ fun RegisterScreen(
                     disabledContainerColor = Color(0xFF2B6B8B),
                     disabledContentColor = Color.White
                 ),
-                enabled = isFormValid && !viewModel.isLoading.value
+                enabled = isFormValid && !viewModel.isLoading.value  && isTermsAccepted
             ) {
                 if (viewModel.isLoading.value) {
                     CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
@@ -163,6 +179,20 @@ fun RegisterScreen(
                 Text("Есть аккаунт? ", fontSize = 13.sp, color = Color(0xFF9E9E9E))
                 Text("Войти", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = Color(0xFF333333), modifier = Modifier.clickable { navController.navigate("login") })
             }
+        }
+        if (showAlert) {
+            AlertDialog(
+                onDismissRequest = { showAlert = false },
+                title = { Text("Ошибка") },
+                text = { Text(alertMessage) },
+                confirmButton = {
+                    TextButton(
+                        onClick = { showAlert = false }
+                    ) {
+                        Text("OK")
+                    }
+                }
+            )
         }
     }
 }

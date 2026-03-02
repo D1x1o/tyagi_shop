@@ -22,10 +22,13 @@ class SignUpViewModel : ViewModel() {
                     .signUp(SignUpRequest(email, password))
 
                 if (response.isSuccessful) {
-
                     navController.navigate("verifyOTP/$email/signup")
                 } else {
-                    errorMessage.value = "Ошибка: ${response.code()}"
+                    when (response.code()) {
+                        409 -> errorMessage.value = "Пользователь уже существует"
+                        400 -> errorMessage.value = "Неверный формат email или пароля"
+                        else -> errorMessage.value = "Ошибка сервера: ${response.code()}"
+                    }
                 }
 
             } catch (e: Exception) {
