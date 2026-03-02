@@ -11,20 +11,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.tyagi_shop.ui.theme.Tyagi_shopTheme
+import androidx.navigation.compose.rememberNavController
+import com.example.tyagi_shop.ui.theme.MosyaginTheme
+import com.example.upsidorkin.ui.view.RegisterScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Tyagi_shopTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+            MosyaginTheme {
+                RegisterScreen(modifier = Modifier, rememberNavController())
             }
         }
     }
@@ -41,7 +38,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    Tyagi_shopTheme {
+    MosyaginTheme {
         Greeting("Android")
     }
 }
