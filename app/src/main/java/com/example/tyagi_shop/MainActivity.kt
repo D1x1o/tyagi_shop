@@ -11,8 +11,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.tyagi_shop.ui.theme.MosyaginTheme
+import com.example.tyagi_shop.ui.view.Onboard1Screen
+import com.example.tyagi_shop.ui.view.Onboard2Screen
+import com.example.tyagi_shop.ui.view.Onboard3Screen
+import com.example.upsidorkin.ui.view.LoginScreen
 import com.example.upsidorkin.ui.view.RegisterScreen
 
 class MainActivity : ComponentActivity() {
@@ -21,24 +27,20 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MosyaginTheme {
-                RegisterScreen(modifier = Modifier, rememberNavController())
+                val navController = rememberNavController()
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = "onboard1",
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        composable("onboard1") { Onboard1Screen(navController) }
+                        composable("onboard2") { Onboard2Screen(navController) }
+                        composable("onboard3") { Onboard3Screen(navController) }
+                        composable("login") { LoginScreen(navController = navController) }
+                        composable("register") { RegisterScreen(navController = navController) }
             }
         }
     }
-}
+}}}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MosyaginTheme {
-        Greeting("Android")
-    }
-}

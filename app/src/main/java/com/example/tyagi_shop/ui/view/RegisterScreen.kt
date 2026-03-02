@@ -46,9 +46,6 @@ fun RegisterScreen(
     var password by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
     var isTermsAccepted by remember { mutableStateOf(false) }
-
-    // Используем .verticalScroll(rememberScrollState()) в модификаторе Column,
-    // но с fillMaxHeight() для правильной работы веса (weight)
     val scrollState = rememberScrollState()
     val context = LocalContext.current
 
@@ -67,8 +64,6 @@ fun RegisterScreen(
         modifier = modifier.fillMaxSize(),
         color = Color.White
     ) {
-        // Чтобы weight(1f) работал внутри скролла, используем fillMaxSize()
-        // и verticalScroll().
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -172,7 +167,6 @@ fun RegisterScreen(
     }
 }
 
-// ОСТАВЬТЕ StyledTextField и ShieldCheckbox ТАКИМИ ЖЕ, КАК БЫЛИ
 @Composable
 private fun StyledTextField(
     value: String,
