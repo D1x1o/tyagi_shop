@@ -18,4 +18,8 @@ interface UserManagementService {
     @Headers("apikey: $API_KEY", "Content-Type: application/json")
     @POST("auth/v1/token?grant_type=password")
     suspend fun signIn(@Body signInRequest: SignInRequest): Response<SignInResponse>
+
+    @Headers("apikey: ${com.example.tyagi_shop.data.service.API_KEY}", "Content-Type: application/json")
+    @POST("auth/v1/verify")
+    suspend fun verifyOTP(@Body verifyOtpRequest: VerifyOtpRequest): Response<Any>
 }

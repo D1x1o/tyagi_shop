@@ -11,13 +11,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.tyagi_shop.ui.theme.MosyaginTheme
 import com.example.tyagi_shop.ui.view.Onboard1Screen
 import com.example.tyagi_shop.ui.view.Onboard2Screen
 import com.example.tyagi_shop.ui.view.Onboard3Screen
+import com.example.tyagi_shop.ui.view.VerifyOTPScreen
 import com.example.upsidorkin.ui.view.LoginScreen
 import com.example.upsidorkin.ui.view.RegisterScreen
 
@@ -39,6 +42,24 @@ class MainActivity : ComponentActivity() {
                         composable("onboard3") { Onboard3Screen(navController) }
                         composable("login") { LoginScreen(navController = navController) }
                         composable("register") { RegisterScreen(navController = navController) }
+                            composable(
+                                route = "verifyOTP/{email}/{type}",
+                                arguments = listOf(
+                                    navArgument("email") { type = NavType.StringType },
+                                    navArgument("type") { type = NavType.StringType }
+                                )
+                            ) { backStackEntry ->
+                                val email = backStackEntry.arguments?.getString("email") ?: ""
+                                val type = backStackEntry.arguments?.getString("type") ?: "signup"
+                                VerifyOTPScreen(
+                                    navController = navController,
+                                    email = email,
+                                    otpType = type
+                                )
+
+
+
+                        }
             }
         }
     }
