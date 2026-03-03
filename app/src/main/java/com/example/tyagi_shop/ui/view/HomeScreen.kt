@@ -1,4 +1,4 @@
-package com.example.upsidorkin.ui.view
+package com.example.tyagi_shop.ui.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,7 +24,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.upsidorkin.R
+import com.example.tyagi_shop.R
 
 data class Product(
     val id: Int,
@@ -323,7 +323,7 @@ private fun PromoBanner() {
             .background(Color.White)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.img_promo_banner),
+            painter = painterResource(id = R.drawable.img_addvertisment),
             contentDescription = "Promo",
             modifier = Modifier.fillMaxSize()
         )

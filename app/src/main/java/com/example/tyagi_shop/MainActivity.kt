@@ -17,6 +17,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.tyagi_shop.ui.theme.MosyaginTheme
+import com.example.tyagi_shop.ui.view.ForgotPasswordScreen
+import com.example.tyagi_shop.ui.view.HomeScreen
+import com.example.tyagi_shop.ui.view.NewPasswordScreen
 import com.example.tyagi_shop.ui.view.Onboard1Screen
 import com.example.tyagi_shop.ui.view.Onboard2Screen
 import com.example.tyagi_shop.ui.view.Onboard3Screen
@@ -41,6 +44,7 @@ class MainActivity : ComponentActivity() {
                         composable("onboard2") { Onboard2Screen(navController) }
                         composable("onboard3") { Onboard3Screen(navController) }
                         composable("login") { LoginScreen(navController = navController) }
+                        composable("home") { HomeScreen(navController = navController) }
                         composable("register") { RegisterScreen(navController = navController) }
                             composable(
                                 route = "verifyOTP/{email}/{type}",
@@ -55,13 +59,23 @@ class MainActivity : ComponentActivity() {
                                     navController = navController,
                                     email = email,
                                     otpType = type
-                                )
-
-
-
+                                )}
+                        composable("forgot_password") {
+                            ForgotPasswordScreen(navController)
                         }
+                        composable(
+                            route = "new_password/{email}",
+                            arguments = listOf(
+                                navArgument("email") { type = NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            val email = backStackEntry.arguments?.getString("email") ?: ""
+                            NewPasswordScreen(navController = navController, email = email)
+                        }
+                    }
+                }
             }
         }
     }
-}}}
+}
 

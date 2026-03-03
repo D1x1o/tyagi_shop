@@ -1,4 +1,4 @@
-package com.example.tyagi_shop.ui.view
+ package com.example.tyagi_shop.ui.view
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -50,12 +50,22 @@ fun Onboard1Screen(navController: NavHostController) {
                 .padding(horizontal = 24.dp, vertical = 32.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.End
             ) {
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = "ДОБРО\nПОЖАЛОВАТЬ",
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(180.dp))
                 Image(
                     painter = painterResource(id = R.drawable.onboard1),
                     contentDescription = null,
@@ -64,18 +74,6 @@ fun Onboard1Screen(navController: NavHostController) {
                         .height(320.dp)
                         .offset(x = 20.dp, y = (-20).dp)
                 )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Text(
-                    text = "ДОБРО\nПОЖАЛОВАТЬ",
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Row(
@@ -133,7 +131,7 @@ fun Onboard2Screen(navController: NavHostController) {
 fun Onboard3Screen(navController: NavHostController) {
     OnboardBase(
         imageRes = R.drawable.onboard3,
-        title = "У Вас Есть Сила,\nЧтобы",
+        title = "У Вас есть сила,\nчтобы",
         subtitle = "В вашей комнате много красивых\nи привлекательных растений",
         buttonText = "Далее",
         onButtonClick = { navController.navigate("register") },

@@ -56,6 +56,8 @@ fun RegisterScreen(
     var isTermsAccepted by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
     val context = LocalContext.current
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     val isFormValid = name.isNotBlank() &&
             android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
@@ -64,10 +66,32 @@ fun RegisterScreen(
 
     LaunchedEffect(viewModel.errorMessage.value) {
         viewModel.errorMessage.value?.let { msg ->
-            Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+            errorMessage = msg
+            showErrorDialog = true
+            viewModel.errorMessage.value = null // Сбрасываем сообщение об ошибке
         }
     }
-
+    // AlertDialog
+    if (showErrorDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showErrorDialog = false
+                errorMessage = ""
+            },
+            title = { Text("Ошибка") },
+            text = { Text(errorMessage) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showErrorDialog = false
+                        errorMessage = ""
+                    }
+                ) {
+                    Text("OK")
+                }
+            }
+        )
+    }
     Surface(
         modifier = modifier.fillMaxSize(),
         color = Color.White
@@ -100,7 +124,7 @@ fun RegisterScreen(
 
             Text("Регистрация", fontSize = 30.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF333333), textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
             Spacer(modifier = Modifier.height(4.dp))
-            Text("Заполните Свои Данные", fontSize = 14.sp, color = Color(0xFFB0B0B0), textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+            Text("Заполните свои данные", fontSize = 14.sp, color = Color(0xFFB0B0B0), textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
 
             Spacer(modifier = Modifier.height(40.dp))
 
@@ -142,7 +166,7 @@ fun RegisterScreen(
             Button(
                 onClick = {
                     if (!isValidEmail(email.trim())) {
-                        alertMessage = "Введите корректный email адрес"
+                        alertMessage = "Введите корректный почтовый адрес"
                         showAlert = true
                     } else if (password.trim().length < 6) {
                         alertMessage = "Пароль должен содержать минимум 6 символов"

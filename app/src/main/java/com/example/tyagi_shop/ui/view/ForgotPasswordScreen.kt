@@ -1,8 +1,9 @@
-package com.example.upsidorkin.ui.view
+package com.example.tyagi_shop.ui.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.upsidorkin.R
-import com.example.upsidorkin.ui.viewModel.ForgotPasswordViewModel
+import com.example.tyagi_shop.R
+import com.example.tyagi_shop.ui.viewModel.ForgotPasswordViewModel
 
 @Composable
 fun ForgotPasswordScreen(
@@ -26,8 +27,37 @@ fun ForgotPasswordScreen(
     viewModel: ForgotPasswordViewModel = viewModel()
 ) {
     var email by remember { mutableStateOf("") }
-    val showDialog = viewModel.showDialog.value // Диалог "Проверьте ваш Email"
-
+    val showDialog = viewModel.showDialog.value
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+    LaunchedEffect(viewModel.errorMessage.value) {
+        viewModel.errorMessage.value?.let { msg ->
+            errorMessage = msg
+            showErrorDialog = true
+            viewModel.errorMessage.value = null // Сбрасываем сообщение об ошибке
+        }
+    }
+    // AlertDialog
+    if (showErrorDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showErrorDialog = false
+                errorMessage = ""
+            },
+            title = { Text("Ошибка") },
+            text = { Text(errorMessage) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showErrorDialog = false
+                        errorMessage = ""
+                    }
+                ) {
+                    Text("OK")
+                }
+            }
+        )
+    }
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { viewModel.showDialog.value = false },
@@ -40,7 +70,7 @@ fun ForgotPasswordScreen(
                         .background(Color(0xFF48B2E7)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(painter = painterResource(id = R.drawable.email_icon), contentDescription = null, tint = Color.White) // Нужна иконка email
+                    Icon(painter = painterResource(id = R.drawable.icon_email), contentDescription = null, tint = Color.White) // Нужна иконка email
                 }
             },
             title = {
@@ -80,18 +110,19 @@ fun ForgotPasswordScreen(
             Box(
                 modifier = Modifier
                     .size(32.dp)
+                    .clip(CircleShape)
                     .clip(RoundedCornerShape(8.dp))
                     .background(Color(0xFFF7F7F7))
                     .clickable { navController.popBackStack() },
                 contentAlignment = Alignment.Center
             ) {
-                Icon(painter = painterResource(id = R.drawable.arrow), contentDescription = null, tint = Color.Black)
+                Icon(painter = painterResource(id = R.drawable.back_button), contentDescription = null, tint = Color.Black)
             }
 
             Spacer(modifier = Modifier.height(30.dp))
-            Text("Забыл Пароль", fontSize = 24.sp, fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+            Text("Забыл пароль", fontSize = 24.sp, fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Введите Свою Учетную Запись\nДля Сброса", fontSize = 14.sp, color = Color.Gray, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+            Text("Введите свою учетную запись\nдля сброса", fontSize = 14.sp, color = Color.Gray, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
 
             Spacer(modifier = Modifier.height(40.dp))
             OutlinedTextField(
@@ -111,7 +142,6 @@ fun ForgotPasswordScreen(
             Spacer(modifier = Modifier.height(30.dp))
             Button(
                 onClick = {
-                    // Вызываем ViewModel для отправки письма
                     viewModel.sendRecoveryEmail(email)
                 },
                 modifier = Modifier.fillMaxWidth().height(50.dp),

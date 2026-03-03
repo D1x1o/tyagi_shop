@@ -27,6 +27,7 @@ class SignUpViewModel : ViewModel() {
                     when (response.code()) {
                         409 -> errorMessage.value = "Пользователь уже существует"
                         400 -> errorMessage.value = "Неверный формат email или пароля"
+                        429 -> errorMessage.value = "Слишком много запросов, повторите позднее"
                         else -> errorMessage.value = "Ошибка сервера: ${response.code()}"
                     }
                 }

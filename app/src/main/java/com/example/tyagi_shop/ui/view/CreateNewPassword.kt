@@ -1,4 +1,4 @@
-package com.example.upsidorkin.ui.view
+package com.example.tyagi_shop.ui.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.upsidorkin.R
-import com.example.upsidorkin.ui.viewModel.NewPasswordViewModel
+import com.example.tyagi_shop.R
+import com.example.tyagi_shop.ui.viewModel.NewPasswordViewModel
 
 @Composable
 fun NewPasswordScreen(
@@ -29,9 +29,38 @@ fun NewPasswordScreen(
 ) {
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
     val isValid = password.length >= 6 && password == confirmPassword
 
+    LaunchedEffect(viewModel.errorMessage.value) {
+        viewModel.errorMessage.value?.let { msg ->
+            errorMessage = msg
+            showErrorDialog = true
+            viewModel.errorMessage.value = null // Сбрасываем сообщение об ошибке
+        }
+    }
+    // AlertDialog
+    if (showErrorDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showErrorDialog = false
+                errorMessage = ""
+            },
+            title = { Text("Ошибка") },
+            text = { Text(errorMessage) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showErrorDialog = false
+                        errorMessage = ""
+                    }
+                ) {
+                    Text("OK")
+                }
+            }
+        )
+    }
     Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
         Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
             Spacer(modifier = Modifier.height(50.dp))
@@ -46,7 +75,7 @@ fun NewPasswordScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.arrow),
+                    painter = painterResource(id = R.drawable.back_button),
                     contentDescription = null,
                     tint = Color.Black
                 )
@@ -54,14 +83,14 @@ fun NewPasswordScreen(
 
             Spacer(modifier = Modifier.height(30.dp))
             Text(
-                "Задать Новый Пароль",
+                "Задать новый пароль",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
             Text(
-                "Установите Новый Пароль Для Входа В\nВашу Учетную Запись",
+                "Установите новый пароль для входа в\nвашу учетную запись",
                 fontSize = 14.sp,
                 color = Color.Gray,
                 textAlign = TextAlign.Center,

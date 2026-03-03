@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -43,14 +44,52 @@ fun VerifyOTPScreen(
     otpType: String = "signup", // "signup" или "recovery"
     viewModel: VerifyOTPViewModel = viewModel()
 ) {
+    val otpStandartColor = colorResource(id = R.color.otpStandart)
+    val otpRedColor = colorResource(id = R.color.otpRed)
+    var otpBackgroundColor by remember { mutableStateOf(otpStandartColor) }
+
     var otpValue by remember { mutableStateOf(TextFieldValue("")) }
     val context = LocalContext.current
-    val otpLength = 6
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     LaunchedEffect(otpValue.text) {
-        if (otpValue.text.length == otpLength) {
+        if (otpValue.text.length == 8) {
             viewModel.verifyOTP(email, otpValue.text, otpType, context, navController)
+            otpBackgroundColor = otpStandartColor // Зеленый при отправке
         }
+    }
+
+    LaunchedEffect(viewModel.errorMessage.value) {
+        viewModel.errorMessage.value?.let { msg ->
+            errorMessage = msg
+            showErrorDialog = true
+            otpBackgroundColor = otpRedColor // КРАСНЫЙ при ошибке!
+            viewModel.errorMessage.value = null
+        }
+    }
+    if (showErrorDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showErrorDialog = false
+                errorMessage = ""
+                otpBackgroundColor = otpRedColor
+            },
+            title = { Text("Ошибка") },
+            text = { Text(errorMessage) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showErrorDialog = false
+                        errorMessage = ""
+                        otpBackgroundColor = otpRedColor
+                    }
+                ) {
+                    Text("OK")
+                }
+            }
+        )
+
     }
 
     Surface(
@@ -93,7 +132,7 @@ fun VerifyOTPScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "Пожалуйста, Проверьте Свою\nЭлектронную Почту, Чтобы Увидеть Код\nПодтверждения",
+                text = "Пожалуйста, проверьте свою\nэлектронную почту, чтобы увидеть код\nподтверждения",
                 fontSize = 14.sp,
                 color = Color(0xFF7D7D7D),
                 textAlign = TextAlign.Center,
@@ -111,13 +150,19 @@ fun VerifyOTPScreen(
             )
 
             OtpInputField(
+                modifier = Modifier
+                    .height(20.dp)
+                    .background(otpBackgroundColor, RoundedCornerShape(12.dp))
+                    .width(16.dp),
                 otpValue = otpValue,
                 onValueChange = {
-                    if (it.text.length <= otpLength) {
+                    if (it.text.length <= 8) {
                         otpValue = it
                     }
                 },
-                length = otpLength
+                length = 8,
+                backgroundColor = otpBackgroundColor, // Передаем текущий цвет фона
+                errorColor = otpRedColor
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -130,9 +175,12 @@ fun VerifyOTPScreen(
 
 @Composable
 fun OtpInputField(
+    modifier: Modifier,
     otpValue: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
-    length: Int
+    length: Int,
+    backgroundColor: Color, // Добавьте этот параметр
+    errorColor: Color
 ) {
     Box(
         contentAlignment = Alignment.CenterStart
@@ -150,7 +198,8 @@ fun OtpInputField(
                         val char = if (index < otpValue.text.length) otpValue.text[index] else null
                         val isFocused = index == otpValue.text.length
 
-                        OtpCell(char = char, isFocused = isFocused)
+                        OtpCell(char = char, isFocused = isFocused, backgroundColor = backgroundColor,
+                            errorColor = errorColor )
                     }
                 }
             },
@@ -163,21 +212,28 @@ fun OtpInputField(
 @Composable
 fun OtpCell(
     char: Char?,
-    isFocused: Boolean
+    isFocused: Boolean,
+    backgroundColor: Color, // Добавьте этот параметр
+    errorColor: Color
 ) {
     val borderColor = if (isFocused) Color(0xFFFF5252) else Color(0xFFF7F7F7)
-    val backgroundColor = Color(0xFFF7F7F7)
+    // Используем backgroundColor для фона ячейки
+    val cellBackgroundColor = if (backgroundColor == errorColor) {
+        errorColor.copy(alpha = 0.3f) // Делаем цвет полупрозрачным для ошибки
+    } else {
+        Color(0xFFF7F7F7) // Стандартный цвет для ячеек
+    }
 
     Box(
         modifier = Modifier
             .width(48.dp)
             .height(60.dp)
-            .clip(androidx.compose.foundation.shape.RoundedCornerShape(12.dp))
-            .background(backgroundColor)
+            .clip(RoundedCornerShape(12.dp))
+            .background(cellBackgroundColor) // Используем измененный цвет
             .border(
                 width = if (isFocused) 1.dp else 0.dp,
                 color = borderColor,
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp)
             ),
         contentAlignment = Alignment.Center
     ) {
@@ -185,7 +241,7 @@ fun OtpCell(
             text = char?.toString() ?: "",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = if (backgroundColor == errorColor) Color.Red else Color.Black, // Текст красный при ошибке
             textAlign = TextAlign.Center
         )
     }

@@ -2,6 +2,7 @@ package com.example.tyagi_shop.ui.viewModel
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -11,6 +12,7 @@ import kotlinx.coroutines.launch
 
 class VerifyOTPViewModel : ViewModel() {
 
+    val errorMessage = mutableStateOf<String?>(null)
     // type: "signup" или "recovery"
     fun verifyOTP(
         email: String,
@@ -42,10 +44,16 @@ class VerifyOTPViewModel : ViewModel() {
                         }
                     }
                 } else {
-                    Toast.makeText(context, "Неверный код", Toast.LENGTH_SHORT).show()
+                    when (response.code()) {
+                        409 -> errorMessage.value = "Пользователь уже существует"
+                        403 -> errorMessage.value = "Неверный код подтверждения"
+                        400 -> errorMessage.value = "Неверный формат email или пароля"
+                        429 -> errorMessage.value = "Слишком много запросов, повторите позднее"
+                        else -> errorMessage.value = "Ошибка сервера: ${response.code()}"
+                    }
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, "Ошибка сети: ${e.message}", Toast.LENGTH_SHORT).show()
+                errorMessage.value = "Ошибка: ${e.message}"
             }
         }
     }
