@@ -70,7 +70,7 @@ fun ForgotPasswordScreen(
                         .background(Color(0xFF48B2E7)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(painter = painterResource(id = R.drawable.icon_email), contentDescription = null, tint = Color.White) // Нужна иконка email
+                    Icon(painter = painterResource(id = R.drawable.ic_email), contentDescription = null, tint = Color.White) // Нужна иконка email
                 }
             },
             title = {

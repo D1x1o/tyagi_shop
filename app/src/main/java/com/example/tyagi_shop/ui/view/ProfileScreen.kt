@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -119,20 +120,19 @@ fun ProfileScreen(
         containerColor = Color.White,
         bottomBar = { BottomBar(navController = navController, currentRoute = "profile") }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
+        Box(modifier = Modifier.padding(0.dp)) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 24.dp),
+                    .padding(top = innerPadding.calculateTopPadding(),
+                        bottom = innerPadding.calculateBottomPadding(),
+                        start = 24.dp,
+                        end = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
-
                 TopHeader(isEditing = isEditing, onEditClick = { isEditing = !isEditing })
-
-                Spacer(modifier = Modifier.height(24.dp))
-
+                Spacer(modifier = Modifier.height(28.dp))
                 AvatarSection(
                     avatarUri = avatarUri,
                     onClick = { if (isEditing) launchCamera() }
@@ -304,6 +304,8 @@ fun BarcodeCard() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clip(androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
+            .background(color = colorResource(id = R.color.otpStandart))
             .height(80.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -315,7 +317,7 @@ fun BarcodeCard() {
         ) {
             Text(
                 text = "Открыть",
-                fontSize = 12.sp,
+                fontSize = 8.sp,
                 color = Color.Gray,
                 modifier = Modifier.rotate(-90f),
                 maxLines = 1
