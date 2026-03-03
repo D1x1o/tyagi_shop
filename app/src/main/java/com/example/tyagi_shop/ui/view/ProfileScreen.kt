@@ -135,7 +135,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(28.dp))
                 AvatarSection(
                     avatarUri = avatarUri,
-                    onClick = { if (isEditing) launchCamera() }
+                    onClick = { launchCamera() }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -246,7 +246,7 @@ fun TopHeader(isEditing: Boolean, onEditClick: () -> Unit) {
         Box(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .size(32.dp)
+                .size(40.dp)
                 .clip(CircleShape)
                 .background(if (isEditing) Color.Transparent else Color(0xFF48B2E7))
                 .clickable { onEditClick() },
