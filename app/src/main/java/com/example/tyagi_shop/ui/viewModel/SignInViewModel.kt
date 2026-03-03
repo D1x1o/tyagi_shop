@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.tyagi_shop.data.RetrofitInstance
+import com.example.tyagi_shop.data.UserSession
 import com.example.tyagi_shop.data.model.SignInRequest
 import kotlinx.coroutines.launch
 import kotlin.math.log
@@ -28,6 +29,9 @@ class SignInViewModel : ViewModel() {
                     if (body != null) {
                         val accessToken = body.access_token
                         val userId = body.user.id
+
+                        UserSession.accessToken = accessToken
+                        UserSession.userId = userId
                     }
 
                     navController.navigate("home") {
