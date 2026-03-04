@@ -22,6 +22,7 @@ import androidx.navigation.navArgument
 import com.example.tyagi_shop.data.UserSession
 import com.example.tyagi_shop.ui.theme.MosyaginTheme
 import com.example.tyagi_shop.ui.view.CatalogScreen
+import com.example.tyagi_shop.ui.view.FavoriteScreen
 import com.example.tyagi_shop.ui.view.ForgotPasswordScreen
 import com.example.tyagi_shop.ui.view.HomeScreen
 import com.example.tyagi_shop.ui.view.NewPasswordScreen
@@ -45,7 +46,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "onboard1",
+                        startDestination = "login",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("onboard1") { Onboard1Screen(navController) }
@@ -95,9 +96,9 @@ class MainActivity : ComponentActivity() {
                                 LoginScreen(navController = navController)
                             }
                         }
-//                        composable("favorite") {
-//                            FavoriteScreen(navController = navController)
-//                        }
+                        composable("favorite") {
+                            FavoriteScreen(navController = navController)
+                        }
                         composable(
                             route = "catalog/{category}",
                             arguments = listOf(

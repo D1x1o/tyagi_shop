@@ -52,10 +52,13 @@ interface UserManagementService {
     @POST("change-password")
     suspend fun changePassword(@Body body: ChangePasswordRequest): Response<Any>
 
-    @Headers("apikey: $API_KEY")
+    @Headers("apikey: $API_KEY", "Content-Type: application/json", "Authorization: Bearer $API_KEY", "Prefer: return=minimal")
+    @POST("rest/v1/favourite")
+    suspend fun addToFavourite(@Body favouriteRequest: FavouriteRequest): Response<Any>
+
+    @Headers("apikey: $API_KEY", "Authorization: Bearer $API_KEY")
     @GET("rest/v1/profiles")
     suspend fun getProfile(
-        @Header("Authorization") authHeader: String,
         @Query("user_id") userIdFilter: String, // "eq.<uuid>"
         @Query("select") select: String = "*"
     ): List<ProfileDto>

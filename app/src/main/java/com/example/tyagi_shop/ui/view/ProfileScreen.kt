@@ -97,7 +97,6 @@ fun ProfileScreen(
         try {
             val service = RetrofitInstance.userManagementService
             val list: List<ProfileDto> = service.getProfile(
-                authHeader = "Bearer $accessToken",
                 userIdFilter = "eq.$userId"
             )
             val profile = list.firstOrNull()
