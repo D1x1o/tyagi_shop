@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.tyagi_shop.data.UserSession
 import com.example.tyagi_shop.ui.theme.MosyaginTheme
+import com.example.tyagi_shop.ui.view.CatalogScreen
 import com.example.tyagi_shop.ui.view.ForgotPasswordScreen
 import com.example.tyagi_shop.ui.view.HomeScreen
 import com.example.tyagi_shop.ui.view.NewPasswordScreen
@@ -93,6 +94,28 @@ class MainActivity : ComponentActivity() {
                             } else {
                                 LoginScreen(navController = navController)
                             }
+                        }
+//                        composable("favorite") {
+//                            FavoriteScreen(navController = navController)
+//                        }
+                        composable(
+                            route = "catalog/{category}",
+                            arguments = listOf(
+                                navArgument("category") { type = NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            val category =
+                                backStackEntry.arguments?.getString("category") ?: "Outdoor"
+                            CatalogScreen(
+                                navController = navController,
+                                initialCategoryTitle = category
+                            )
+                        }
+                        composable("catalog") {
+                            CatalogScreen(
+                                navController = navController,
+                                initialCategoryTitle = "Outdoor"
+                            )
                         }
                     }
                 }

@@ -5,7 +5,7 @@ import retrofit2.Response
 import retrofit2.http.*
 
 const val API_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqaXd1Z2lkaWRremxlcXpvdG1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0Nzk4MDMsImV4cCI6MjA4ODA1NTgwM30.JiYMz7leavCGvs5biLAVYjB_V0AhoHgIbWWpffSa6RQ"
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpZWl3Z2ZuaXNsbHhxcGNlcWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MTE4NzAsImV4cCI6MjA4ODE4Nzg3MH0.MFmoWTdaDd6lc3dapKt5HemqheyU3Ja7U4AULxaluW0"
 
 
 data class ProfileDto(
@@ -16,6 +16,20 @@ data class ProfileDto(
     val lastname: String?,
     val address: String?,
     val phone: String?
+)
+data class FavouriteDto(
+    val id: String?,
+    val product_id: String?,
+    val user_id: String?
+)
+
+data class ProductDto(
+    val id: String,
+    val title: String,
+    val category_id: String?,
+    val cost: Double,
+    val description: String,
+    val is_best_seller: Boolean?
 )
 
 interface UserManagementService {
@@ -52,5 +66,35 @@ interface UserManagementService {
         @Header("Authorization") authHeader: String,
         @Query("user_id") userIdFilter: String,
         @Body body: Map<String, Any?>
+    ): Response<Unit>
+
+    @Headers("apikey: $API_KEY")
+    @GET("rest/v1/products")
+    suspend fun getProducts(
+        @Header("Authorization") authHeader: String,
+        @Query("select") select: String = "*"
+    ): List<ProductDto>
+
+    @Headers("apikey: $API_KEY")
+    @GET("rest/v1/favourite")
+    suspend fun getFavourites(
+        @Header("Authorization") authHeader: String,
+        @Query("user_id") userIdFilter: String, // "eq.<uuid>"
+        @Query("select") select: String = "id,product_id,user_id"
+    ): List<FavouriteDto>
+
+    @Headers("apikey: $API_KEY", "Content-Type: application/json")
+    @POST("rest/v1/favourite")
+    suspend fun addFavourite(
+        @Header("Authorization") authHeader: String,
+        @Body body: FavouriteRequest
+    ): Response<Unit>
+
+    @Headers("apikey: $API_KEY")
+    @DELETE("rest/v1/favourite")
+    suspend fun deleteFavourite(
+        @Header("Authorization") authHeader: String,
+        @Query("user_id") userIdFilter: String, // "eq.<uuid>"
+        @Query("product_id") productIdFilter: String // "eq.<uuid>"
     ): Response<Unit>
 }
