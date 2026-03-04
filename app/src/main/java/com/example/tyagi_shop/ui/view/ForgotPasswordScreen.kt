@@ -144,7 +144,7 @@ fun ForgotPasswordScreen(
                 onClick = {
                     viewModel.sendRecoveryEmail(email)
                 },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
+                modifier = Modifier.fillMaxWidth().height(50.dp).clip(CircleShape),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF48B2E7))
             ) {
