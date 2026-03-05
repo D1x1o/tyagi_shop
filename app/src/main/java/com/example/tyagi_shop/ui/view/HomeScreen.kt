@@ -436,7 +436,8 @@ fun BottomBar(navController: NavHostController, currentRoute: String, photoUri: 
                 modifier = Modifier
                     .size(56.dp)
                     .clip(CircleShape)
-                    .background(activeColor),
+                    .background(activeColor)
+                    .clickable{navController.navigate("cart")},
                 contentAlignment = Alignment.Center
             ) {
                 Icon(

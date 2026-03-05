@@ -1,5 +1,6 @@
 package com.example.tyagi_shop.data.service
 
+import Product
 import com.example.tyagi_shop.data.model.*
 import retrofit2.Response
 import retrofit2.http.*
@@ -60,6 +61,17 @@ interface UserManagementService {
     @POST("rest/v1/profiles")
     suspend fun addProfile(@Body body: AddProfileRequest): Response<Unit>
 
+    @GET("rest/v1/products")
+    suspend fun getProducts2(
+        @Header("Authorization") authorization: String,
+        @Header("apikey") apiKey: String = API_KEY
+    ): Response<List<Product>>
+    @GET("rest/v1/products")
+    suspend fun getProductById(
+        @Query("id") filter: String,
+        @Header("Authorization") authorization: String,
+        @Header("apikey") apiKey: String = API_KEY
+    ): Response<List<Product>>
     @Headers("apikey: $API_KEY", "Authorization: Bearer $API_KEY")
     @GET("rest/v1/profiles")
     suspend fun getProfile(
@@ -111,7 +123,44 @@ interface UserManagementService {
     @DELETE("rest/v1/favourite")
     suspend fun deleteFavourite(
         @Header("Authorization") authHeader: String,
-        @Query("user_id") userIdFilter: String, // "eq.<uuid>"
-        @Query("product_id") productIdFilter: String // "eq.<uuid>"
+        @Query("user_id") userIdFilter: String,
+        @Query("product_id") productIdFilter: String
+    ): Response<Unit>
+
+    @GET("rest/v1/cart")
+    suspend fun getCart(
+        @Query("user_id") filter: String,
+        @Header("Authorization") authorization: String,
+        @Header("apikey") apiKey: String = API_KEY
+    ): Response<List<Cart>>
+
+    @GET("rest/v1/products")
+    suspend fun getProductsByCategory(
+        @Query("category_id") filter: String,
+        @Header("Authorization") authorization: String,
+        @Header("apikey") apiKey: String = API_KEY
+    ): Response<List<Product>>
+    @POST("rest/v1/cart")
+    suspend fun addToCart(
+        @Body cartItem: AddToCartRequest,
+        @Header("Authorization") authorization: String,
+        @Header("apikey") apiKey: String = API_KEY,
+        @Header("Prefer") prefer: String = "return=representation"
+    ): Response<List<Cart>>
+
+    @PATCH("rest/v1/cart")
+    suspend fun updateCartItem(
+        @Query("id") filter: String,
+        @Body updates: UpdateCartRequest,
+        @Header("Authorization") authorization: String,
+        @Header("apikey") apiKey: String = API_KEY,
+        @Header("Prefer") prefer: String = "return=representation"
+    ): Response<List<Cart>>
+
+    @DELETE("rest/v1/cart")
+    suspend fun removeFromCart(
+        @Query("id") filter: String,
+        @Header("Authorization") authorization: String,
+        @Header("apikey") apiKey: String = API_KEY
     ): Response<Unit>
 }
