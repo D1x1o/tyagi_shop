@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tyagi_shop.data.RetrofitInstance
 import com.example.tyagi_shop.data.UserSession
+import com.example.tyagi_shop.data.model.AddProfileRequest
 import com.example.tyagi_shop.data.model.FavouriteRequest
 import com.example.tyagi_shop.data.model.ProfileRequest
 import com.example.tyagi_shop.ui.view.ProfileScreen
@@ -36,6 +37,41 @@ class ProfileViewModel : ViewModel() {
                 val response =
                     RetrofitInstance.userManagementService
                         .editProfile(authHeader = "Bearer ${UserSession.accessToken}", "eq.${UserSession.userId}", body = request)
+
+                if (response.isSuccessful) {
+
+                }else {
+                    when (response.code()) {
+                        409 -> errorMessage.value = "Пользователь уже существует"
+                        400 -> errorMessage.value = "Неверный формат почты или пароля"
+                        429 -> errorMessage.value = "Слишком много запросов, повторите позднее"
+                        else -> errorMessage.value = "Ошибка сервера: ${response.code()}"
+                    }
+                    showDialog.value = true
+                }
+
+            } catch (e: Exception) {
+                dialogText.value = "Ошибка: ${e.message}"
+                showDialog.value = true
+                Log.e("Profile", e.message.toString())
+            }
+        }
+    }
+
+    fun addProfile(userId: String) {
+        var showDialog = mutableStateOf(false)
+        var dialogText = mutableStateOf("")
+        val errorMessage = mutableStateOf<String?>(null)
+        viewModelScope.launch {
+            try {
+
+                val request = AddProfileRequest(
+                    user_id = UserSession.userId.toString()
+                )
+
+                val response =
+                    RetrofitInstance.userManagementService
+                        .addProfile(body = request)
 
                 if (response.isSuccessful) {
 

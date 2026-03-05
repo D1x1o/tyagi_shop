@@ -1,6 +1,7 @@
 package com.example.tyagi_shop.ui.view
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.tyagi_shop.R
+import com.example.tyagi_shop.data.CartManager
 import com.example.tyagi_shop.data.UserSession
 import com.example.tyagi_shop.ui.viewModel.HomeViewModel
 import com.example.tyagi_shop.ui.viewModel.SignUpViewModel
@@ -41,7 +44,7 @@ data class Product(
 @Composable
 fun HomeScreen(navController: NavHostController, viewModel: SignUpViewModel = viewModel(), viewModel2: HomeViewModel = viewModel()) {
     val scrollState = rememberScrollState()
-    val categories = listOf("Все", "Outdoor", "Tennis")
+    val categories = listOf("Все", "Outdoor", "Tennis", "Men", "Women")
     var selectedCategory by remember { mutableStateOf("Все") }
 
     var showErrorDialog by remember { mutableStateOf(false) }
@@ -278,6 +281,8 @@ private fun ProductCard(
     navController: NavHostController
 ) {
     var isFavourite by remember { mutableStateOf(false) }
+    var showAddedToCart by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .width(180.dp)
@@ -293,6 +298,7 @@ private fun ProductCard(
             ) {
                 Icon(
                     modifier = Modifier.clickable {
+                        viewModel.addToFavourite(product.id, UserSession.userId.toString())
                         isFavourite = !isFavourite
                     },
                     painter = if (isFavourite)
@@ -354,6 +360,24 @@ private fun ProductCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
+                        modifier = Modifier.clickable{
+                            CartManager.addToCart(product.id) { success ->
+                                if (success) {
+                                    showAddedToCart = true
+                                    Toast.makeText(
+                                        context,
+                                        "${product.name} добавлен в корзину",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Ошибка добавления в корзину",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        },
                         painter = painterResource(id = R.drawable.ic_cart),
                         contentDescription = "Add to cart",
                         tint = Color.White
@@ -436,7 +460,8 @@ fun BottomBar(navController: NavHostController, currentRoute: String, photoUri: 
                 modifier = Modifier
                     .size(56.dp)
                     .clip(CircleShape)
-                    .background(activeColor),
+                    .background(activeColor)
+                    .clickable{navController.navigate("cart")},
                 contentAlignment = Alignment.Center
             ) {
                 Icon(

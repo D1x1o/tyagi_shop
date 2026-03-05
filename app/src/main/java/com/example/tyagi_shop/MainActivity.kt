@@ -19,8 +19,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.tyagi_shop.data.CartManager
 import com.example.tyagi_shop.data.UserSession
 import com.example.tyagi_shop.ui.theme.MosyaginTheme
+import com.example.tyagi_shop.ui.view.CartScreen
 import com.example.tyagi_shop.ui.view.CatalogScreen
 import com.example.tyagi_shop.ui.view.DetailsScreen
 import com.example.tyagi_shop.ui.view.FavoriteScreen
@@ -47,9 +49,10 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "login",
+                        startDestination = "onboard1",
                         modifier = Modifier.padding(innerPadding)
                     ) {
+                        composable("cart") { CartScreen( onBackClick = { navController.popBackStack() })}
                         composable("onboard1") { Onboard1Screen(navController) }
                         composable("onboard2") { Onboard2Screen(navController) }
                         composable("onboard3") { Onboard3Screen(navController) }

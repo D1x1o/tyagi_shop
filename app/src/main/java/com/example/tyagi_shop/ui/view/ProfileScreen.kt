@@ -94,9 +94,10 @@ fun ProfileScreen(
                 PackageManager.PERMISSION_GRANTED
         if (ok) cameraLauncher.launch(tmpImageUri) else permissionLauncher.launch(Manifest.permission.CAMERA)
     }
-
+    val viewModel: ProfileViewModel = viewModel()
     // ---------- загрузка профиля ----------
     LaunchedEffect(userId, accessToken) {
+
         isLoading = true
         try {
             val service = RetrofitInstance.userManagementService
@@ -110,7 +111,8 @@ fun ProfileScreen(
                 address = profile.address.orEmpty()
                 phone = profile.phone.orEmpty()
             } else {
-                errorText = "Профиль не найден"
+                errorText = "Профиль не найден, но вы можете создать его!"
+                viewModel.addProfile(UserSession.userId.toString())
             }
         } catch (e: Exception) {
             errorText = "Не удалось загрузить профиль: ${e.localizedMessage}"
