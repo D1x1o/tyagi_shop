@@ -22,6 +22,7 @@ import androidx.navigation.navArgument
 import com.example.tyagi_shop.data.UserSession
 import com.example.tyagi_shop.ui.theme.MosyaginTheme
 import com.example.tyagi_shop.ui.view.CatalogScreen
+import com.example.tyagi_shop.ui.view.DetailsScreen
 import com.example.tyagi_shop.ui.view.FavoriteScreen
 import com.example.tyagi_shop.ui.view.ForgotPasswordScreen
 import com.example.tyagi_shop.ui.view.HomeScreen
@@ -116,6 +117,18 @@ class MainActivity : ComponentActivity() {
                             CatalogScreen(
                                 navController = navController,
                                 initialCategoryTitle = "Outdoor"
+                            )
+                        }
+                        composable(
+                            route = "details/{productId}",
+                            arguments = listOf(
+                                navArgument("productId") { type = NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            val productId = backStackEntry.arguments?.getString("productId") ?: ""
+                            DetailsScreen(
+                                navController = navController,
+                                productId = productId
                             )
                         }
                     }

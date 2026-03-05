@@ -52,7 +52,7 @@ interface UserManagementService {
     @POST("change-password")
     suspend fun changePassword(@Body body: ChangePasswordRequest): Response<Any>
 
-    @Headers("apikey: $API_KEY", "Content-Type: application/json", "Authorization: Bearer $API_KEY", "Prefer: return=minimal")
+    @Headers("apikey: $API_KEY", "Content-Type: application/json", "Authorization: Bearer $API_KEY")
     @POST("rest/v1/favourite")
     suspend fun addToFavourite(@Body favouriteRequest: FavouriteRequest): Response<Any>
 

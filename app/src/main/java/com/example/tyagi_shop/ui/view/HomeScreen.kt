@@ -47,7 +47,7 @@ fun HomeScreen(navController: NavHostController, viewModel: SignUpViewModel = vi
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
-    var isFavourite = viewModel2.favouriteState.value
+        //val favouriteProducts = mutableStateListOf<String>()
     LaunchedEffect(viewModel.errorMessage.value) {
         viewModel.errorMessage.value?.let { msg ->
             errorMessage = msg
@@ -182,7 +182,11 @@ fun HomeScreen(navController: NavHostController, viewModel: SignUpViewModel = vi
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(products) { product ->
-                    ProductCard(product = product, HomeViewModel(), isFavourite)
+                    ProductCard(
+                        product = product,
+                        viewModel = viewModel2,
+                        navController = navController
+                    )
                 }
             }
 
@@ -268,13 +272,19 @@ private fun CategoryChip(
 }
 
 @Composable
-private fun ProductCard(product: Product, viewModel: HomeViewModel, isFavourite: Boolean) {
+private fun ProductCard(
+    product: Product,
+    viewModel: HomeViewModel,
+    navController: NavHostController
+) {
+    var isFavourite by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .width(180.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
             .padding(12.dp)
+            .clickable{navController.navigate("details/${product.id}")}
     ) {
         Column {
             Row(
@@ -282,18 +292,15 @@ private fun ProductCard(product: Product, viewModel: HomeViewModel, isFavourite:
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Icon(
-                    modifier = Modifier.clickable{
-                        viewModel.addToFavourite(product.id, UserSession.userId)
-
+                    modifier = Modifier.clickable {
+                        isFavourite = !isFavourite
                     },
-                    painter = if(isFavourite){
-                        painterResource(id = R.drawable.ic_heart_fill)
-                    } else {
-                        painterResource(id = R.drawable.ic_favorite_border)
-                    },
+                    painter = if (isFavourite)
+                        painterResource(id = R.drawable.ic_heart_fill4)
+                    else
+                        painterResource(id = R.drawable.ic_favorite_border),
                     contentDescription = "Favorite",
-                    tint = Color(0xFFB0B0B0)
-
+                    tint = if (isFavourite) Color.Red else Color(0xFFB0B0B0)
                 )
             }
 

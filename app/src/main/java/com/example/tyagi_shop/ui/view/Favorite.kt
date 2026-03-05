@@ -241,6 +241,13 @@ private fun FavoriteProductCard(
                     color = Color(0xFF48B2E7),
                     fontWeight = FontWeight.Bold
                 )
+            } else{
+                Text(
+                    text = "",
+                    fontSize = 10.sp,
+                    color = Color(0xFF48B2E7),
+                    fontWeight = FontWeight.Bold
+                )
             }
 
             Spacer(modifier = Modifier.height(2.dp))
