@@ -3,6 +3,7 @@ package com.example.tyagi_shop.ui.view
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.provider.ContactsContract
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -39,11 +40,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.tyagi_shop.R
 import com.example.tyagi_shop.data.RetrofitInstance
+import com.example.tyagi_shop.data.UserSession
 import com.example.tyagi_shop.data.service.ProfileDto
+import com.example.tyagi_shop.ui.viewModel.ProfileViewModel
 import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.collections.firstOrNull
@@ -117,7 +121,7 @@ fun ProfileScreen(
 
     Scaffold(
         containerColor = Color.White,
-        bottomBar = { BottomBar(navController = navController, currentRoute = "profile") }
+        bottomBar = { BottomBar(navController = navController, currentRoute = "profile", avatarUri.toString(), firstName,lastName,address,phone) }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(0.dp)) {
             Column(
@@ -130,7 +134,11 @@ fun ProfileScreen(
                         end = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TopHeader(isEditing = isEditing, onEditClick = { isEditing = !isEditing })
+                val viewModel: ProfileViewModel = viewModel()
+                TopHeader(
+                    isEditing = isEditing, onEditClick = { isEditing = !isEditing },
+                    viewModel= viewModel
+                    )
                 Spacer(modifier = Modifier.height(28.dp))
                 AvatarSection(
                     avatarUri = avatarUri,
@@ -161,32 +169,8 @@ fun ProfileScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
-                            scope.launch {
-                                isLoading = true
-                                try {
-                                    val body = mapOf(
-                                        "firstname" to firstName,
-                                        "lastname" to lastName,
-                                        "address" to address,
-                                        "phone" to phone
-                                    )
-                                    val resp = RetrofitInstance.userManagementService.updateProfile(
-                                        authHeader = "Bearer $accessToken",
-                                        userIdFilter = "eq.$userId",
-                                        body = body
-                                    )
-                                    if (resp.isSuccessful) {
-                                        isEditing = false
-                                    } else {
-                                        errorText = "Ошибка сохранения: ${resp.code()}"
-                                    }
-                                } catch (e: Exception) {
-                                    errorText =
-                                        "Не удалось сохранить профиль: ${e.localizedMessage}"
-                                } finally {
-                                    isLoading = false
-                                }
-                            }
+                            viewModel.editProfile(UserSession.userId.toString(), avatarUri.toString(), firstName, lastName, address, phone)
+
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -232,7 +216,7 @@ fun ProfileScreen(
 // ---------- вспомогательные composable ----------
 
 @Composable
-fun TopHeader(isEditing: Boolean, onEditClick: () -> Unit) {
+fun TopHeader(isEditing: Boolean, onEditClick: () -> Unit, viewModel: ProfileViewModel = viewModel()) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Профиль",
@@ -252,12 +236,7 @@ fun TopHeader(isEditing: Boolean, onEditClick: () -> Unit) {
             contentAlignment = Alignment.Center
         ) {
             if (isEditing) {
-                Text(
-                    "Готово",
-                    fontSize = 12.sp,
-                    color = Color(0xFF48B2E7),
-                    fontWeight = FontWeight.Bold
-                )
+
             } else {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_edit),

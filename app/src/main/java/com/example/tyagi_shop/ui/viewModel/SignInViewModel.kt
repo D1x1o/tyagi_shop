@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.tyagi_shop.data.RetrofitInstance
 import com.example.tyagi_shop.data.UserSession
+import com.example.tyagi_shop.data.model.AddProfileRequest
 import com.example.tyagi_shop.data.model.SignInRequest
 import kotlinx.coroutines.launch
-import kotlin.math.log
 
 class SignInViewModel : ViewModel() {
 
@@ -52,4 +52,6 @@ class SignInViewModel : ViewModel() {
             }
         }
     }
+
+
 }

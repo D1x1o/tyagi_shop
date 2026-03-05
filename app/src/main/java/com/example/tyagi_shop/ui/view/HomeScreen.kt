@@ -82,7 +82,7 @@ fun HomeScreen(navController: NavHostController, viewModel: SignUpViewModel = vi
     )
 
     Scaffold(
-        bottomBar = { BottomBar(navController = navController, currentRoute = "home") },
+        bottomBar = { BottomBar(navController = navController, currentRoute = "home", "","" ,"","" ,"") },
         containerColor = Color(0xFFF5F7FA)
     ) { innerPadding ->
         Column(
@@ -382,7 +382,8 @@ private fun PromoBanner() {
 }
 
 @Composable
-fun BottomBar(navController: NavHostController, currentRoute: String) {
+fun BottomBar(navController: NavHostController, currentRoute: String, photoUri: String
+              ,firstname: String, lastname: String, address: String, phone: String) {
     val activeColor = Color(0xFF48B2E7)
     val inactiveColor = Color(0xFFB0B0B0)
 

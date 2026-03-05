@@ -29,6 +29,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tyagi_shop.R
+import com.example.tyagi_shop.data.UserSession
+import com.example.tyagi_shop.data.model.AddProfileRequest
 import com.example.tyagi_shop.ui.theme.MosyaginTheme
 import com.example.tyagi_shop.ui.viewModel.SignInViewModel
 import com.example.tyagi_shop.data.model.SignInRequest
@@ -40,6 +42,7 @@ fun LoginScreen(
     viewModel: SignInViewModel = viewModel()
 ) {
     var email by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
@@ -101,7 +104,7 @@ fun LoginScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(30.dp)) // Такой же отступ как в Register
+            Spacer(modifier = Modifier.height(30.dp))
 
             Text(
                 text = "Привет!",
@@ -122,9 +125,8 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(40.dp)) // Был 60, стал 40 для симметрии с Register
+            Spacer(modifier = Modifier.height(40.dp))
 
-            // Email
             Text(
                 text = "Email",
                 fontSize = 13.sp,
@@ -142,7 +144,6 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Пароль
             Text(
                 text = "Пароль",
                 fontSize = 13.sp,

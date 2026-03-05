@@ -104,7 +104,7 @@ fun FavoriteScreen(navController: NavHostController) {
     }
 
     Scaffold(
-        bottomBar = { BottomBar(navController = navController, currentRoute = "favorite") },
+        bottomBar = { BottomBar(navController = navController, currentRoute = "favorite", "","","","","") },
         containerColor = Color(0xFFF5F7FB)
     ) { innerPadding ->
         // убираем верхний отступ, оставляем только снизу, чтобы всё было выше

@@ -56,6 +56,10 @@ interface UserManagementService {
     @POST("rest/v1/favourite")
     suspend fun addToFavourite(@Body favouriteRequest: FavouriteRequest): Response<Any>
 
+    @Headers("apikey: $API_KEY", "Content-Type: application/json", "Authorization: Bearer $API_KEY")
+    @POST("rest/v1/profiles")
+    suspend fun addProfile(@Body body: AddProfileRequest): Response<Unit>
+
     @Headers("apikey: $API_KEY", "Authorization: Bearer $API_KEY")
     @GET("rest/v1/profiles")
     suspend fun getProfile(
@@ -85,6 +89,16 @@ interface UserManagementService {
         @Query("user_id") userIdFilter: String, // "eq.<uuid>"
         @Query("select") select: String = "id,product_id,user_id"
     ): List<FavouriteDto>
+
+    @Headers("apikey: $API_KEY", "Content-Type: application/json")
+    @PATCH("rest/v1/profiles")
+    suspend fun editProfile(
+        @Header("Authorization") authHeader: String,
+        @Query("user_id") userId: String,
+        @Body body: ProfileRequest
+    ): Response<Unit>
+
+
 
     @Headers("apikey: $API_KEY", "Content-Type: application/json")
     @POST("rest/v1/favourite")
